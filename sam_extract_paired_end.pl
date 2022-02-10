@@ -51,8 +51,18 @@ while(<$in>){
 	}
  	my $pos1 = $sam1[3];
 	my $CIGAR1 = $sam1[5];
- 	my $read_length1 = length($sam1[13]) - 5;
- 	my $m1 = substr($sam1[13], 5, $read_length1);
+ 	my $read_length1 = length($sam1[9]); # Check the length of read sequence
+
+ 	my $methyl1;
+ 	my $substr = "XM:Z"; # Get methyl calls from the field starting with XM tag
+	foreach ( @sam1 ) {
+		if( $_ =~ /$substr/ ){
+			$methyl1 = $_;
+			last;
+		}
+	}
+
+ 	my $m1 = substr($methyl1, 5, $read_length1);
  	# call the absolute.reference function to obtain the coordinates of each nucleotide
 	my @ar1 = abs_ref($CIGAR1, $pos1, $read_length1);
 
@@ -60,8 +70,17 @@ while(<$in>){
 	my $chr2 = $sam2[2];
  	my $pos2 = $sam2[3];
 	my $CIGAR2 = $sam2[5];
- 	my $read_length2 = length($sam2[13]) - 5;
- 	my $m2 = substr($sam2[13], 5, $read_length2);
+ 	my $read_length2 = length($sam2[9]);
+
+ 	my $methyl2;
+	foreach ( @sam1 ) {
+		if( $_ =~ /$substr/ ){
+			$methyl2 = $_;
+			last;
+		}
+	}
+
+ 	my $m2 = substr($methyl2, 5, $read_length2);
  	# call the absolute.reference function to obtain the coordinates of each nucleotide
 	my @ar2 = abs_ref($CIGAR2, $pos2, $read_length2);
 	
