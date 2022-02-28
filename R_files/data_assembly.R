@@ -48,10 +48,28 @@ data_assembly <- function(sam_data){
   for (mu in c(1:7)){data[[mu]] <- data[[mu]][-na]}
   names(data) <- c('name','flag1','flag2','start','end','z','Z')   
   
-  # Subtract 1 from reverse reads
-  data[[4]][which(data[[2]]=="83")] <- data[[4]][which(data[[2]]=="83")] - 1
-  data[[5]][which(data[[2]]=="83")] <- data[[5]][which(data[[2]]=="83")] - 1
+  # Detect reversed reads
+  convert_to_binary <- function(n) {
+      a<-""
+      if(n > 1) {
+          a <- convert_to_binary(as.integer(n/2))
+      }
+      a <- paste0(a, as.character(n %% 2))
+      return(a)
+  }
   
+  binary_samtag = mclapply(data[[2]], function(x){convert_to_binary(as.numeric(x))}, mc.cores = 6)
+  
+  i = lapply(binary_samtag, function(x){
+      substr(x, nchar(x)-4, nchar(x)-4) == "1"
+  })
+  
+  j = lapply(binary_samtag, nchar) >=5
+  idx = which(unlist(i)&j)
+
+  # Subtract 1 from reverse reads
+  data[[4]][idx] <- data[[4]][idx]-1
+  data[[5]][idx] <- data[[5]][idx]-1
   
   # ----------------------------------------------------------- #
   # Generate partition maps
