@@ -15,7 +15,7 @@
     # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-data_assembly <- function(sam_data){
+data_assembly <- function(sam_data, n_cores=1){
   
   #    Flags 99 and 147 mean that the genome coordinate of a CpG aligns with the C (forward reads).
   #    Flags 83 and 163 mean that the coordinate alingns with the G (reverse reads).
@@ -58,7 +58,7 @@ data_assembly <- function(sam_data){
       return(a)
   }
   
-  binary_samtag = mclapply(data[[2]], function(x){convert_to_binary(as.numeric(x))}, mc.cores = 6)
+  binary_samtag = mclapply(data[[2]], function(x){convert_to_binary(as.numeric(x))}, mc.cores = n_cores)
   
   i = lapply(binary_samtag, function(x){
       substr(x, nchar(x)-4, nchar(x)-4) == "1"

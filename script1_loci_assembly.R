@@ -1,22 +1,23 @@
-    Bayesian epiallele detection
-    Copyright (C) 2019 James E. Barrett (regmjeb@ucl.ac.uk)
+#     Bayesian epiallele detection
+#     Copyright (C) 2019 James E. Barrett (regmjeb@ucl.ac.uk)
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+#     This program is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+#     This program is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#----------------------------------------#
+# #----------------------------------------#
 # Parse command line args
 #----------------------------------------#
+if(!requireNamespace("getopt")) BiocManager::install("getopt")
 
 library(getopt)
 library(parallel)
@@ -50,6 +51,7 @@ if ( is.null(opt$sample_id)){
 #----------------------------------------#
 
 NCORES <- 22
+if(detectCores() < NCORES) NCORES = detectCores()
 cl <- makeCluster(NCORES)
 
 
@@ -80,7 +82,7 @@ file.cols[[7]] <- 'Z'
 
 
 str <- strsplit(opt$input_dir,split='/')
-sample_id <- str[[1]][length(str[[1]])]
+sample_id <- opt$sample_id
 
 # list of files in input directory
 file_list <- dir(opt$input_dir)
